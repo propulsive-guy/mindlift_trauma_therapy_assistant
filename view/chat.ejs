@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Trauma Assistant Chat</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { height: 100%; width: 100%; overflow: hidden; font-family: system-ui, sans-serif; }
+    .app { display: flex; height: 100%; width: 100%; }
+    .sidebar { width: 260px; background: #202123; color: #fff; display: flex; flex-direction: column; padding: 12px; }
+    .sidebar h2 { font-size: 18px; margin-bottom: 12px; text-align: center; }
+    .new-chat-btn { background: #6a5acd; color: #fff; border: none; padding: 12px; margin-bottom: 16px; border-radius: 6px; cursor: pointer; font-size: 14px; font-weight: bold; }
+    .history { flex: 1; overflow-y: auto; }
+    .history-item { padding: 10px; margin: 4px 0; border-radius: 4px; background: #2a2b32; cursor: pointer; font-size: 14px; }
+    .history-item:hover { background: #3b3c45; }
+    .chat-area { flex: 1; display: flex; flex-direction: column; height: 100%; background: #f9fafb; }
+    .chat-header { background: #6a5acd; color: white; padding: 16px; font-size: 18px; font-weight: bold; text-align: center; }
+    .chat-box { flex: 1; padding: 20px; overflow-y: auto; }
+    .message { max-width: 75%; padding: 12px 16px; margin: 10px 0; border-radius: 16px; line-height: 1.5; word-wrap: break-word; animation: fadeIn 0.3s ease-in-out; }
+    .user-message { background: #6a5acd; color: white; margin-left: auto; border-bottom-right-radius: 4px; }
+    .bot-message { background: #e5e7eb; color: black; margin-right: auto; border-bottom-left-radius: 4px; }
+    .chat-input { display: flex; padding: 12px; border-top: 1px solid #ddd; background: #fff; }
+    .chat-input textarea { flex: 1; resize: none; border: 1px solid #ccc; border-radius: 8px; padding: 12px; font-size: 15px; outline: none; max-height: 150px; overflow-y: auto; }
+    .chat-input button { background: #6a5acd; color: white; border: none; border-radius: 8px; padding: 0 20px; margin-left: 8px; font-size: 16px; cursor: pointer; transition: background 0.2s ease; }
+    .chat-input button:hover { background: #5849c4; }
+    @keyframes fadeIn { from {opacity: 0; transform: translateY(5px);} to {opacity: 1; transform: translateY(0);} }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <!-- Sidebar -->
+    <div class="sidebar">
+      <h2>Trauma AI</h2>
+      <button class="new-chat-btn" onclick="newChat()">+ New Chat</button>
+      <div class="history" id="history"></div>
+    </div>
+
+    <!-- Chat Area -->
+    <div class="chat-area">
+      <div class="chat-header">🧠 Hi <%= name %>, I’m your Trauma Assistant</div>
+      <div class="chat-box" id="chat-box">
+        <div class="bot-message message">
+          How are you feeling today?
+        </div>
+      </div>
+      <div class="chat-input">
+        <textarea id="user-input" rows="1" placeholder="Type a message..."></textarea>
+        <button onclick="sendMessage()">Send</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const chatBox = document.getElementById("chat-box");
+    const userInput = document.getElementById("user-input");
+    const historyBox = document.getElementById("history");
+    let chatCount = 1;
+
+    async function sendMessage() {
+      const message = userInput.value.trim();
+      if (message === "") return;
+
+      addMessage(message, "user");
+      userInput.value = "";
+      userInput.style.height = "auto";
+
+      // Show typing indicator
+      const typingMsg = document.createElement("div");
+      typingMsg.classList.add("message", "bot-message");
+      typingMsg.innerText = "Typing...";
+      chatBox.appendChild(typingMsg);
+      chatBox.scrollTop = chatBox.scrollHeight;
+
+      try {
+        // ✅ Call backend Gemini API
+        const response = await fetch("/chat-api", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ message })
+        });
+
+        const data = await response.json();
+        chatBox.removeChild(typingMsg);
+        addMessage(data.reply, "bot");
+
+      } catch (err) {
+        chatBox.removeChild(typingMsg);
+        addMessage("⚠️ Error connecting to Trauma AI.", "bot");
+      }
+    }
+
+    function addMessage(text, sender) {
+      const messageDiv = document.createElement("div");
+      messageDiv.classList.add("message", sender === "user" ? "user-message" : "bot-message");
+      messageDiv.innerText = text;
+      chatBox.appendChild(messageDiv);
+      chatBox.scrollTop = chatBox.scrollHeight;
+    }
+
+    function newChat() {
+      const chatItem = document.createElement("div");
+      chatItem.classList.add("history-item");
+      chatItem.innerText = "Chat " + chatCount++;
+      chatItem.onclick = () => loadChat(chatItem.innerText);
+      historyBox.appendChild(chatItem);
+
+      chatBox.innerHTML = '<div class="bot-message message">Hello, I’m your Trauma Assistant. How are you feeling today?</div>';
+    }
+
+    function loadChat(title) {
+      chatBox.innerHTML = `<div class="bot-message message">🔄 Loading ${title} history (placeholder)...</div>`;
+    }
+
+    // Auto-resize input
+    userInput.addEventListener("input", () => {
+      userInput.style.height = "auto";
+      userInput.style.height = userInput.scrollHeight + "px";
+    });
+
+    userInput.addEventListener("keypress", function (e) {
+      if (e.key === "Enter" && !e.shiftKey) {
+        e.preventDefault();
+        sendMessage();
+      }
+    });
+  </script>
+</body>
+</html>
