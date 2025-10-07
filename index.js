@@ -22,9 +22,14 @@ app.use(session({
 }));
 
 // MongoDB Connection
-mongoose.connect("mongodb+srv://test1:test121@cluster0.3jrysla.mongodb.net/traumaDB?retryWrites=true&w=majority")
-  .then(() => console.log("✅ Connected to MongoDB Atlas"))
-  .catch(err => console.error("❌ MongoDB connection error:", err));
+mongoose.connect(process.env.MONGO_URI, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+  serverSelectionTimeoutMS: 10000
+})
+.then(() => console.log("✅ Connected to MongoDB Atlas"))
+.catch(err => console.error("❌ MongoDB connection error:", err));
+
 
 // View Engine
 app.set("view engine", "ejs");
