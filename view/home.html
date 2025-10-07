@@ -3,61 +3,183 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>HOME</title>
+  <title>Home | Welcome</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
   <style>
+    /* Using CSS variables for a consistent theme */
+    :root {
+      --background-start: #141E30;
+      --background-end: #243B55;
+      --card-background: rgba(255, 255, 255, 0.08);
+      --card-border: rgba(255, 255, 255, 0.2);
+      --primary-text: #E0E0E0;
+      --secondary-text: #BDBDBD;
+      --accent-color: #4A90E2;
+      --accent-hover: #357ABD;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
     body {
-      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-      background: linear-gradient(135deg, #ff9966, #ff5e62);
-      color: #333;
+      font-family: "Inter", sans-serif;
+      background: linear-gradient(135deg, var(--background-start), var(--background-end));
+      color: var(--primary-text);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+    
+    /* Header and Navigation */
+    .main-header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      padding: 15px 5%;
+      background: var(--card-background);
+      border-bottom: 1px solid var(--card-border);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
       display: flex;
-      flex-direction: column;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 100;
+    }
+    
+    .logo {
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--primary-text);
+      text-decoration: none;
+    }
+    
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 30px;
+    }
+    
+    .nav-links a {
+      color: var(--secondary-text);
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 16px;
+      transition: color 0.3s ease;
+    }
+    
+    .nav-links a:hover {
+      color: var(--primary-text);
+    }
+
+    /* Main Hero Section */
+    .hero-section {
+      display: flex;
       justify-content: center;
       align-items: center;
-      height: 100vh;
-      margin: 0;
       text-align: center;
+      min-height: 100vh;
+      padding: 0 20px;
+    }
+    
+    .hero-content {
+      max-width: 800px;
+      animation: fadeIn 1s ease-out forwards;
     }
 
-    h1 {
-      font-size: 2.5rem;
-      color: white;
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .hero-content h1 {
+      font-size: 4rem; /* 64px */
+      font-weight: 800;
+      line-height: 1.2;
       margin-bottom: 20px;
+      /* Optional: Gradient text for a nice effect */
+      background: linear-gradient(45deg, #ffffff, #b0c4de);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
     }
 
-    p {
-      max-width: 600px;
-      font-size: 18px;
-      color: #f0f0f0;
-      margin-bottom: 30px;
+    .hero-content p {
+      font-size: 1.125rem; /* 18px */
+      color: var(--secondary-text);
+      margin-bottom: 40px;
       line-height: 1.6;
     }
 
+    /* Shared Button Styles */
     .btn {
-      background: white;
-      color: #ff5e62;
-      padding: 12px 25px;
+      display: inline-block;
+      font-size: 16px;
+      font-weight: 600;
+      padding: 14px 30px;
       border-radius: 8px;
       text-decoration: none;
-      font-weight: bold;
-      font-size: 16px;
       transition: all 0.3s ease;
-      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+      border: none;
+      cursor: pointer;
+    }
+    
+    /* Primary Button Style (for Login) */
+    .btn-primary {
+      background-color: var(--accent-color);
+      color: white;
+      box-shadow: 0 4px 15px rgba(74, 144, 226, 0.3);
+    }
+    
+    .btn-primary:hover {
+      background-color: var(--accent-hover);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(74, 144, 226, 0.4);
     }
 
-    .btn:hover {
-      background: #ffe1e1;
-      color: #d43f52;
+    /* Secondary Button Style (for Learn More) */
+    .btn-secondary {
+        background-color: transparent;
+        color: var(--primary-text);
+        border: 1px solid var(--card-border);
+    }
+
+    .btn-secondary:hover {
+        background-color: var(--card-background);
+        border-color: var(--accent-color);
     }
   </style>
 </head>
 <body>
-  <h1>WELCOME TO APP</h1>
 
-  <p>
-    Lorem ipsum dolor sit amet consectetur, adipisicing elit. 
-    Corrupti quod numquam doloribus, rem suscipit fugit eos debitis quasi praesentium id.
-  </p>
+  <header class="main-header">
+    <a href="#" class="logo">Mindlift</a>
+    <nav class="nav-links">
+      <a href="#">Home</a>
+      <a href="#">Features</a>
+      <a href="#">About</a>
+    
+    </nav>
+  </header>
 
-  <a href="/login" class="btn">Login</a>
+  <main class="hero-section">
+    <div class="hero-content">
+      <h1>Mindlift -Trauma Therapy Assistant</h1>
+      <p>
+        Mindlift is your compassionate AI companion, offering gentle support, coping strategies, and a safe space to express emotions—helping you feel heard, understood, and calmer anytime you need.
+      </p>
+      <a href="/login" class="btn btn-primary">Login</a>
+    </div>
+  </main>
+
 </body>
 </html>
