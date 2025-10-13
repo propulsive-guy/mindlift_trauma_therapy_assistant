@@ -3,11 +3,11 @@ const path = require("path");
 const ejs = require("ejs");
 const mongoose = require("mongoose");
 const session = require("express-session");
-const dotenv = require("dotenv");
+
 const User = require("./model/user");
 const Chat = require("./model/chat");
 const { getGeminiResponse, clearChatHistory } = require('./controller/gemini');
-dotenv.config();
+
 const port = 3000;
 const app = express();
 
